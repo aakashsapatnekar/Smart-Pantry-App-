@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pantry App</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="food-bg" aria-hidden="true"></div>
+
+<div class="phone">
+
+    <!-- TOP BAR -->
+    <div class="topbar">
+        <div>
+            <p class="welcome" id="welcomeText">Welcome back, Aakash!</p>
+            <button class="edit-name-btn" id="editNameBtn" title="Edit name">✏️</button>
+        </div>
+        <div class="icons">
+            <button id="mealPlanBtn" title="Meal Planner">🍴</button>
+            <button id="chatBtn" title="AI Chat">💬</button>
+            <button id="colorBtn" title="Theme Color">🎨</button>
+            <button id="dietBtn" title="Diet Plan">🏃</button>
+            <button id="profileBtn" title="My Profile">👤</button>
+        </div>
+    </div>
+
+    <!-- COLOR PANEL — sits right under topbar, overlays recipe section -->
+    <div id="colorPanel" class="color-panel">
+        <span onclick="changeColor('#3b82f6')" style="background:#3b82f6" title="Blue"></span>
+        <span onclick="changeColor('#22c55e')" style="background:#22c55e" title="Green"></span>
+        <span onclick="changeColor('#ef4444')" style="background:#ef4444" title="Red"></span>
+        <span onclick="changeColor('#eab308')" style="background:#eab308" title="Yellow"></span>
+        <span onclick="changeColor('#f97316')" style="background:#f97316" title="Orange"></span>
+        <span onclick="changeColor('#6b7280')" style="background:#6b7280" title="Gray"></span>
+        <span onclick="changeColor('#ec4899')" style="background:#ec4899" title="Pink"></span>
+        <span onclick="changeColor('#8b5cf6')" style="background:#8b5cf6" title="Purple"></span>
+    </div>
+
+    <!-- RECIPE SUGGESTION SECTION -->
+    <div class="recipe-suggest-section">
+        <div class="recipe-suggest-header">
+            <div>
+                <p class="recipe-suggest-label">Based on your pantry</p>
+                <h2 class="recipe-suggest-title">Recipes for you</h2>
+            </div>
+            <button class="refresh-btn" id="refreshRecipeBtn">↻ Refresh</button>
+        </div>
+        <div id="recipeSuggestContent" class="recipe-suggest-card">
+            <p class="recipe-suggest-placeholder">Add items to your pantry to get recipe suggestions!</p>
+        </div>
+    </div>
+
+    <!-- SCAN -->
+    <div class="scan-section">
+        <h2>Scan your food</h2>
+        <button class="scan-btn" id="scanBtn">Scan</button>
+    </div>
+
+    <!-- SCANNED ITEMS -->
+    <div class="section">
+        <div class="section-header">
+            <h2>Scanned Items</h2>
+            <button class="clear-all-btn" id="clearScanned">Clear All</button>
+        </div>
+        <div class="chips" id="scannedChips">
+            <p class="empty-msg">No scanned items yet.</p>
+        </div>
+    </div>
+
+    <!-- SEARCH -->
+    <div class="search-box">
+        <input type="text" id="searchInput" placeholder="Search everything...">
+        <button id="searchBtn" class="search-btn">Search</button>
+    </div>
+
+    <!-- PANTRY -->
+    <div class="section">
+        <div class="section-header">
+            <h2>Update your pantry here</h2>
+        </div>
+        <div class="chips" id="pantryChips">
+            <button class="add-chip-btn" id="addPantryBtn">Add +</button>
+        </div>
+        <button id="clearPantry" class="clear-all-btn-wide">Clear All</button>
+    </div>
+
+    <!-- MEAL TYPE -->
+    <div class="section">
+        <h2>Meal Type?</h2>
+        <div class="scroll-row">
+            <div class="tile" onclick="openCategory('Breakfast')">Breakfast</div>
+            <div class="tile" onclick="openCategory('Lunch')">Lunch</div>
+            <div class="tile" onclick="openCategory('Dinner')">Dinner</div>
+            <div class="tile" onclick="openCategory('Snacks')">Snacks</div>
+        </div>
+    </div>
+
+    <!-- COOK TIME -->
+    <div class="section">
+        <h2>Preferred Cook Time?</h2>
+        <div class="scroll-row">
+            <div class="tile" onclick="openCategory('Under 30 mins')">Under 30 mins</div>
+            <div class="tile" onclick="openCategory('Under 1 hour')">Under 1 hour</div>
+            <div class="tile" onclick="openCategory('Under 2 hours')">Under 2 hours</div>
+        </div>
+    </div>
+
+    <!-- MY FAVORITES -->
+    <div class="section">
+        <div class="section-header">
+            <h2>My Favorites ❤️</h2>
+            <button class="clear-all-btn" id="clearFavorites">Clear All</button>
+        </div>
+        <div id="favoritesList" class="favorites-list">
+            <p class="empty-msg">No favorites yet. Heart an item to save it here!</p>
+        </div>
+    </div>
+
+
+    <!-- ── SCREENS ── -->
+
+    <!-- CHAT SCREEN -->
+    <div id="chatScreen" class="screen">
+        <div class="screen-header">
+            <button class="back-btn" id="backFromChat">←</button>
+            <h3>AI Chat</h3>
+        </div>
+        <div class="chat-body" id="chatBody">
+            <div class="chat-bubble bot">Hello! Ask me for recipe ideas 👋</div>
+        </div>
+        <div class="chat-input">
+            <input type="text" id="chatInputField" placeholder="Type here...">
+            <button id="chatSendBtn">Send</button>
+        </div>
+    </div>
+
+    <!-- DYNAMIC SCREEN (Breakfast / Lunch / etc.) -->
+    <div id="dynamicScreen" class="screen">
+        <div class="screen-header">
+            <button class="back-btn" id="backDynamic">←</button>
+            <h3 id="screenTitle">Title</h3>
+        </div>
+        <div id="screenContent"></div>
+        <div class="screen-footer">
+            <button id="clearCategoryBtn" class="clear-all-btn-wide">Clear All</button>
+            <button id="addRecipeBtn">Add Recipe</button>
+        </div>
+    </div>
+
+    <!-- MEAL PLANNER SCREEN -->
+    <div id="mealPlanScreen" class="screen">
+        <div class="screen-header">
+            <button class="back-btn" id="backMealPlan">←</button>
+            <h3>Meal Planner</h3>
+        </div>
+        <div class="meal-plan-body" id="mealPlanBody"></div>
+    </div>
+
+    <!-- PROFILE SCREEN -->
+    <div id="profileScreen" class="screen">
+        <div class="screen-header">
+            <button class="back-btn" id="backProfile">←</button>
+            <h3>My Profile</h3>
+        </div>
+        <div class="profile-body" id="profileBody"></div>
+    </div>
+
+    <!-- DIET PLAN SCREEN -->
+    <div id="dietScreen" class="screen">
+        <div class="screen-header">
+            <button class="back-btn" id="backDiet">←</button>
+            <h3>Diet Plan</h3>
+        </div>
+        <div class="diet-body">
+            <p class="diet-subtitle">What's your goal?</p>
+            <div class="diet-goals">
+                <button class="diet-goal-btn" id="goalLose" onclick="selectDietGoal('lose')">
+                    <span class="diet-goal-icon">📉</span>
+                    <div class="diet-goal-text">
+                        <span class="diet-goal-label">Lose Weight</span>
+                        <span class="diet-goal-desc">Low-calorie recipes from your pantry</span>
+                    </div>
+                </button>
+                <button class="diet-goal-btn" id="goalMaintain" onclick="selectDietGoal('maintain')">
+                    <span class="diet-goal-icon">⚖️</span>
+                    <div class="diet-goal-text">
+                        <span class="diet-goal-label">Maintain Weight</span>
+                        <span class="diet-goal-desc">Balanced, nutritious meals</span>
+                    </div>
+                </button>
+                <button class="diet-goal-btn" id="goalGain" onclick="selectDietGoal('gain')">
+                    <span class="diet-goal-icon">📈</span>
+                    <div class="diet-goal-text">
+                        <span class="diet-goal-label">Gain Weight</span>
+                        <span class="diet-goal-desc">High-protein, calorie-dense recipes</span>
+                    </div>
+                </button>
+            </div>
+            <div id="dietResult" class="diet-result"></div>
+        </div>
+    </div>
+
+
+    <!-- ── MODALS ── -->
+
+    <div id="editNameModal" class="modal-overlay">
+        <div class="modal">
+            <h3>Edit your name</h3>
+            <input type="text" id="nameInput" placeholder="Enter your name..." maxlength="30">
+            <div class="modal-actions">
+                <button id="cancelEditName" class="btn-secondary">Cancel</button>
+                <button id="saveEditName" class="btn-primary">Save</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="confirmModal" class="modal-overlay">
+        <div class="modal">
+            <p id="confirmMessage" style="font-size:15px;"></p>
+            <div class="modal-actions">
+                <button id="confirmCancel" class="btn-secondary">Cancel</button>
+                <button id="confirmOk" class="btn-danger">Clear</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="addItemModal" class="modal-overlay">
+        <div class="modal">
+            <h3 id="addItemTitle">Add Item</h3>
+            <input type="text" id="addItemInput" placeholder="e.g. Avocado 🥑" maxlength="40">
+            <div class="modal-actions">
+                <button id="addItemCancel" class="btn-secondary">Cancel</button>
+                <button id="addItemSave" class="btn-primary">Add</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="addRecipeModal" class="modal-overlay">
+        <div class="modal">
+            <h3 id="addRecipeTitle">Add Recipe</h3>
+            <input type="text" id="addRecipeInput" placeholder="e.g. Tomato Pasta" maxlength="60">
+            <div class="modal-actions">
+                <button id="addRecipeCancel" class="btn-secondary">Cancel</button>
+                <button id="addRecipeSave" class="btn-primary">Add</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="addMealModal" class="modal-overlay">
+        <div class="modal">
+            <h3 id="addMealTitle">Add Meal</h3>
+            <input type="text" id="addMealInput" placeholder="e.g. Avocado Toast" maxlength="60">
+            <div class="modal-actions">
+                <button id="addMealCancel" class="btn-secondary">Cancel</button>
+                <button id="addMealSave" class="btn-primary">Add</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="searchToast" class="search-toast"></div>
+
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
